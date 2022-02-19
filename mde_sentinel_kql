@@ -1,7 +1,7 @@
 // Check PwnDefend RDP HoneyPot IP IOC List and compare against network DeviceEvents
 // created by mRr3b00t
 // inspired by stripesoc's example! thanks frens!
-// version 0.1
+// version 0.2 (thanks Ryan!)
 // PwnDefend the Planet!
 let timeframe = (30d);
 let ip_pwndefendpot1 = materialize (
@@ -9,7 +9,7 @@ let ip_pwndefendpot1 = materialize (
 with (format="txt"))
 | project ip_addr
 | summarize by ip_addr);
-search in (DeviceNetworkEvents, DeviceFileEvents, DeviceEvents)
+search in (DeviceNetworkEvents)
 Timestamp > ago(timeframe)
 | where RemoteIP != ""
 | where (RemoteIP in(ip_pwndefendpot1))
