@@ -1,0 +1,11 @@
+// Query Pwndefend bad IP intel feed (GithHub) - thanks to Ryan L for this version - uncomment the required filter at the end
+// success events would indicate a potential incident
+// failure events would indicate a potentially insecure configuration/exposure
+let BadIP = (externaldata(ip_addr: string ) [@"https://raw.githubusercontent.com/PwnDefend/RPDHoneyNet/main/baddies.txt"]
+with (format="txt"))
+| project RemoteIP=tostring(ip_addr);
+BadIP | join DeviceLogonEvents on RemoteIP
+| where Timestamp > ago(30d)
+| where RemoteIPType == "Public" //they all should be anyway
+//| where ActionType == "LogonSuccess" // BadIps that have been successful
+//| where ActionType has_any("LogonFailed","LogonAttempted") //Here are the attempts
